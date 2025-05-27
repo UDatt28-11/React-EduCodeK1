@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { todoSchema } from "../validation/toSchema";
 import { createProduct } from "../api";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const TodoForm = () => {
   const {
@@ -99,11 +100,12 @@ const TodoForm = () => {
 
         <button
           type="submit"
-          className="btn btn-primary w-100"
+          className="btn btn-primary w-100 mb-3"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Đang tạo..." : "Tạo mới todo"}
-        </button>
+        </button> 
+        <Link to='/' className="btn btn-dark">Quay Lại</Link>
       </form>
     </div>
   );
