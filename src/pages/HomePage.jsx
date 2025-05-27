@@ -10,6 +10,8 @@ const HomePage = () => {
   const [priorityFilter, setPriorityFilter] = useState("");
   const [filterStatus, setFilterStatus] = useState(""); // completed | pending | ""
   const [sortType, setSortType] = useState("");
+  const [limit, setLimit] = useState(5);
+  const [page, setPage] = useState(1);
 
   // Hàm để lấy danh sách task từ API
   const fetchTasks = async () => {
@@ -123,6 +125,7 @@ const HomePage = () => {
   
   useEffect(() => {
     fetchTasks();
+    setPage(1);
   }, []);
 
   const filteredTasks = tasks
@@ -132,6 +135,8 @@ const HomePage = () => {
     .filter((task) =>
       priorityFilter ? task.priority === priorityFilter : true
     );
+    const paginatedTasks = filteredTasks.slice((page - 1) * limit, page * limit);
+   const totalPages = Math.ceil(filteredTasks.length / limit);
 
   return (
     <div className="container py-4">
@@ -204,7 +209,7 @@ const HomePage = () => {
     </thead>
     <tbody>
       {filteredTasks.length > 0 ? (
-        filteredTasks.map((task) => (
+        paginatedTasks.map((task) => (
           <tr key={task.id}>
             <td>{task.id}</td>
             <td>{task.title}</td>
@@ -241,6 +246,34 @@ const HomePage = () => {
       )}
     </tbody>
   </table>
+  <div className="mt-4 d-flex justify-content-center">
+        <nav>
+          <ul className="pagination">
+            <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
+              <button className="page-link" onClick={() => setPage(page - 1)}>
+                Previous
+              </button>
+            </li>
+            {[...Array(totalPages)].map((_, i) => (
+              <li
+                key={i}
+                className={`page-item ${page === i + 1 ? "active" : ""}`}
+              >
+                <button className="page-link" onClick={() => setPage(i + 1)}>
+                  {i + 1}
+                </button>
+              </li>
+            ))}
+            <li
+              className={`page-item ${page === totalPages ? "disabled" : ""}`}
+            >
+              <button className="page-link" onClick={() => setPage(page + 1)}>
+                Next
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
 </div>
 
   );
